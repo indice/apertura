@@ -114,7 +114,7 @@ Apertura está diseñada para usuarios que quieren:
 
 ```bash
 # 1. Clona el repositorio
-git clone https://github.com/tu-usuario/apertura.git
+git clone https://github.com/indice/apertura.git
 cd apertura
 
 # 2. Ejecuta el instalador
@@ -331,10 +331,10 @@ fetch('/api/health')
 5. **Abre** un Pull Request
 
 ### 🐛 Reportar Bugs
-Usa el [sistema de issues](https://github.com/tu-usuario/apertura/issues) para reportar bugs o solicitar features.
+Usa el [sistema de issues](https://github.com/indice/apertura/issues) para reportar bugs o solicitar features.
 
 ### 💡 Ideas y Sugerencias
-¿Tienes una idea genial? ¡Compártela en las [discussions](https://github.com/tu-usuario/apertura/discussions)!
+¿Tienes una idea genial? ¡Compártela en las [discussions](https://github.com/indice/apertura/discussions)!
 
 ## 📄 Licencia
 
