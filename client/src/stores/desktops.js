@@ -93,7 +93,7 @@ export const useDesktopsStore = defineStore('desktops', {
     // Exportar configuración
     exportConfiguration() {
       const config = {
-        version: '1.1.0',
+        version: '1.3.1',
         timestamp: new Date().toISOString(),
         data: {
           currentDesktop: this.currentDesktop,
@@ -129,13 +129,13 @@ export const useDesktopsStore = defineStore('desktops', {
         }
         
         // Validar versión (opcional, para futuras compatibilidades)
-        if (config.version && config.version !== '1.1.0') {
+        if (config.version && !['1.1.0', '1.3.0', '1.3.1'].includes(config.version)) {
           console.warn(`Importando configuración de versión ${config.version}`)
         }
         
         // Validar que cada escritorio tenga la estructura correcta
         for (const desktop of config.data.desktops) {
-          if (!desktop.id || !desktop.name || !Array.isArray(desktop.links)) {
+          if (desktop.id === undefined || !desktop.name || !Array.isArray(desktop.links)) {
             throw new Error('Estructura de escritorio inválida')
           }
         }

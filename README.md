@@ -4,7 +4,7 @@ Una página de inicio web minimalista, personalizable y extensible diseñada par
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.3.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)
@@ -306,31 +306,36 @@ fetch('/api/health')
 
 ## 🔮 Roadmap
 
-### v1.1 - Import/Export ✅
+### v1.3.1 - Bugfixes ✅
+- [x] Arreglar validación de import/export con ID 0
+- [x] Mejorar robustez del sistema de configuraciones
+- [x] Compatibilidad con versiones anteriores
+
+### v1.3 - Import/Export ✅
 - [x] Sistema de exportación de configuraciones
 - [x] Sistema de importación con validación
 - [x] Transferencia entre instalaciones
 - [x] Reset a configuración por defecto
 
-### v1.2 - Widgets
+### v1.4 - Widgets
 - [ ] Widget del clima
 - [ ] Widget de noticias
 - [ ] Widget de reloj
 - [ ] Widget de notas
 
-### v1.3 - IA
+### v1.5 - IA
 - [ ] Asistente virtual integrado
 - [ ] Sugerencias de enlaces
 - [ ] Búsqueda inteligente
 - [ ] Comandos por voz
 
-### v1.4 - Sync
+### v1.6 - Sync
 - [ ] Sincronización en la nube
 - [ ] Múltiples dispositivos
 - [ ] Backup automático
 - [ ] Sincronización automática de configuraciones
 
-### v1.5 - Extensiones
+### v1.7 - Extensiones
 - [ ] Sistema de plugins
 - [ ] Temas personalizables
 - [ ] Widgets de terceros
