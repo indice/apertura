@@ -22,24 +22,29 @@ if errorlevel 1 (
 echo ✅ Node.js encontrado
 
 echo.
-echo 2. Instalando dependencias del cliente...
+echo 2. Limpiando instalaciones previas...
 cd client
+if exist "node_modules" rmdir /s /q node_modules
+if exist "package-lock.json" del package-lock.json
+
+echo.
+echo 3. Instalando dependencias del cliente...
 call npm install
 if errorlevel 1 goto error
 
 echo.
-echo 3. Construyendo cliente...
+echo 4. Construyendo cliente...
 call npm run build
 if errorlevel 1 goto error
 
 echo.
-echo 4. Instalando dependencias del servidor...
+echo 5. Instalando dependencias del servidor...
 cd ..\server
 call npm install
 if errorlevel 1 goto error
 
 echo.
-echo 5. ¿Quieres instalar como servicio de Windows? (s/n)
+echo 6. ¿Quieres instalar como servicio de Windows? (s/n)
 set /p choice="Opción: "
 if /i "%choice%"=="s" (
     echo Instalando servicio...
