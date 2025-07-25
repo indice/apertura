@@ -294,17 +294,37 @@ body, html {
   position: relative;
 }
 
+.context-menu-submenu-trigger {
+  justify-content: space-between;
+}
+
+.submenu-arrow {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  transition: transform var(--transition-fast);
+}
+
+.current-indicator {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
 .context-submenu {
-  position: absolute;
-  left: 100%;
-  top: 0;
+  position: static;
   background: white;
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-heavy);
+  box-shadow: var(--shadow-light);
   border: 1px solid #e5e7eb;
-  min-width: 120px;
+  min-width: 140px;
+  margin-top: 4px;
+  margin-left: 16px;
   overflow: hidden;
-  animation: contextMenuAppear var(--transition-fast) ease-out;
+}
+
+/* Si el submenú se sale por la derecha, mostrarlo a la izquierda */
+.context-menu-submenu:hover .context-submenu {
+  left: -100%;
 }
 
 .context-menu-overlay {
@@ -486,6 +506,286 @@ body, html {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.form-group-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.form-label-small {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+  min-width: 100px;
+}
+
+.form-select-small {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  background: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.form-select-small:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.mouse-config {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: var(--border-radius);
+  border-left: 3px solid #3b82f6;
+}
+
+
+/* Side Panel */
+.side-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: var(--backdrop-blur);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.side-panel {
+  width: 400px;
+  height: 100vh;
+  backdrop-filter: var(--backdrop-blur);
+  box-shadow: var(--shadow-heavy);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.3s ease-out;
+  position: relative;
+}
+
+.side-panel-overlay-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.side-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  position: relative;
+  z-index: 2;
+}
+
+.side-panel-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.close-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #374151;
+}
+
+.side-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.config-section {
+  margin-bottom: 2rem;
+}
+
+.config-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.form-checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.form-checkbox-label {
+  font-size: 0.875rem;
+  color: #111827;
+  line-height: 1.4;
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.desktop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.desktop-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-fast);
+}
+
+.desktop-item.active {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+.desktop-preview {
+  width: 32px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.desktop-name {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #111827;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.desktop-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.btn-primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.btn-danger:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.gradient-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.gradient-button {
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: white;
+  font-weight: 500;
+  font-size: 0.75rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.gradient-button:hover {
+  border-color: #3b82f6;
+  transform: scale(1.02);
+}
+
+.gradient-button.active {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 .color-button {

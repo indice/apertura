@@ -128,12 +128,18 @@
       @add="addDesktop"
     />
 
-    <!-- Modal de configuración -->
-    <SettingsModal
-      v-if="showSettings"
+    <!-- Panel de configuración -->
+    <SidePanel
+      :is-open="showSettings"
       :desktop="currentDesktop"
+      :all-desktops="desktops"
+      :current-desktop-index="currentDesktopIndex"
       @close="showSettings = false"
       @update="updateDesktop"
+      @switch-desktop="goToDesktop"
+      @remove-desktop="removeDesktop"
+      @add-desktop="showAddDesktop = true"
+      @update-navigation="updateNavigationSettings"
     />
 
     <!-- Menú contextual -->
@@ -158,9 +164,12 @@
       >
         <button 
           @click="toggleMoveSubmenu"
-          class="context-menu-item"
+          class="context-menu-item context-menu-submenu-trigger"
         >
           📁 Mover a...
+          <span class="submenu-arrow">
+            {{ contextMenu.showMoveSubmenu ? '▼' : '▶' }}
+          </span>
         </button>
         <div 
           v-if="contextMenu.showMoveSubmenu"
@@ -172,9 +181,14 @@
             @click="moveLink(index)"
             :disabled="index === contextMenu.desktopIndex"
             class="context-menu-item"
-            :class="{ 'context-menu-item--disabled': index === contextMenu.desktopIndex }"
+            :class="{ 
+              'context-menu-item--disabled': index === contextMenu.desktopIndex
+            }"
           >
             {{ desktop.name }}
+            <span v-if="index === contextMenu.desktopIndex" class="current-indicator">
+              (actual)
+            </span>
           </button>
         </div>
       </div>
@@ -196,18 +210,18 @@
 </template>
 
 <script>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useDesktopsStore } from '../stores/desktops'
 import LinkModal from '../components/LinkModal.vue'
 import DesktopModal from '../components/DesktopModal.vue'
-import SettingsModal from '../components/SettingsModal.vue'
+import SidePanel from '../components/SidePanel.vue'
 
 export default {
   name: 'HomeView',
   components: {
     LinkModal,
     DesktopModal,
-    SettingsModal
+    SidePanel
   },
   setup() {
     const store = useDesktopsStore()
@@ -287,7 +301,26 @@ export default {
     const updateDesktop = (updates) => {
       store.updateDesktop(store.currentDesktop, updates)
       store.saveToLocalStorage()
-      showSettings.value = false
+    }
+
+    const removeDesktop = (index) => {
+      store.removeDesktop(index)
+      store.saveToLocalStorage()
+    }
+
+    const updateNavigationSettings = (settings) => {
+      // Guardar configuración de navegación y configurar listeners
+      if (settings.browserNavigation) {
+        setupBrowserNavigation()
+      } else {
+        removeBrowserNavigation()
+      }
+      
+      if (settings.keyboardNavigation) {
+        setupKeyboardNavigation()
+      } else {
+        removeKeyboardNavigation()
+      }
     }
 
     const handleIconError = (link) => {
@@ -320,7 +353,9 @@ export default {
     }
 
     const toggleMoveSubmenu = () => {
-      contextMenu.value.showMoveSubmenu = !contextMenu.value.showMoveSubmenu
+      const newState = !contextMenu.value.showMoveSubmenu
+      console.log(`📁 ${newState ? 'Abriendo' : 'Cerrando'} submenú de mover`)
+      contextMenu.value.showMoveSubmenu = newState
     }
 
     const handleLinkClick = (event, link) => {
@@ -344,26 +379,170 @@ export default {
     }
 
     const moveLink = (targetDesktopIndex) => {
-      if (targetDesktopIndex === contextMenu.value.desktopIndex) return
+      console.log('🔄 Intentando mover enlace:', {
+        targetDesktopIndex,
+        sourceDesktopIndex: contextMenu.value.desktopIndex,
+        link: contextMenu.value.link,
+        desktopsCount: desktops.value.length
+      })
+      
+      if (targetDesktopIndex === contextMenu.value.desktopIndex) {
+        console.log('❌ No se puede mover: mismo escritorio')
+        return
+      }
       
       const link = contextMenu.value.link
       const sourceDesktopIndex = contextMenu.value.desktopIndex
       
-      // Añadir enlace al escritorio destino
-      store.addLink(targetDesktopIndex, link)
+      try {
+        // Añadir enlace al escritorio destino
+        console.log('➕ Añadiendo enlace al escritorio destino:', targetDesktopIndex)
+        store.addLink(targetDesktopIndex, link)
+        
+        // Remover enlace del escritorio origen
+        console.log('➖ Removiendo enlace del escritorio origen:', sourceDesktopIndex)
+        store.removeLink(sourceDesktopIndex, link.id)
+        
+        store.saveToLocalStorage()
+        console.log('✅ Enlace movido exitosamente')
+        hideContextMenu()
+      } catch (error) {
+        console.error('❌ Error moviendo enlace:', error)
+      }
+    }
+
+    // Variables para navegación
+    let popstateHandler = null
+    let keydownHandler = null
+
+    // Navegación con botones del navegador
+    const setupBrowserNavigation = () => {
+      if (popstateHandler) return // Ya está configurado
       
-      // Remover enlace del escritorio origen
-      store.removeLink(sourceDesktopIndex, link.id)
+      console.log('🌐 Configurando navegación del navegador...')
       
-      store.saveToLocalStorage()
-      hideContextMenu()
+      // Limpiar historial existente y crear uno nuevo
+      const currentUrl = window.location.href.split('#')[0] // Remover hash si existe
+      
+      // Reemplazar el estado actual
+      window.history.replaceState({ desktopIndex: 0 }, '', currentUrl)
+      
+      // Crear una entrada de historial para cada escritorio
+      desktops.value.forEach((desktop, index) => {
+        if (index > 0) { // No crear para el primero (ya está en replaceState)
+          const state = { desktopIndex: index }
+          const url = `${currentUrl}#desktop-${index}`
+          window.history.pushState(state, '', url)
+          console.log(`📋 Creada entrada de historial para: ${desktop.name} (índice ${index})`)
+        }
+      })
+      
+      // Volver al escritorio actual
+      const currentDesktopIndex = store.currentDesktop
+      if (currentDesktopIndex > 0) {
+        // Navegar hacia atrás hasta el escritorio actual
+        const stepsBack = desktops.value.length - 1 - currentDesktopIndex
+        if (stepsBack > 0) {
+          window.history.go(-stepsBack)
+        }
+      }
+      
+      popstateHandler = (event) => {
+        if (event.state && typeof event.state.desktopIndex === 'number') {
+          const targetIndex = event.state.desktopIndex
+          console.log(`🔄 Navegando a escritorio ${targetIndex} via historial del navegador`)
+          if (targetIndex >= 0 && targetIndex < desktops.value.length) {
+            store.setCurrentDesktop(targetIndex)
+            store.saveToLocalStorage()
+          }
+        }
+      }
+      
+      window.addEventListener('popstate', popstateHandler)
+      console.log('✅ Navegación del navegador configurada')
+    }
+
+    const removeBrowserNavigation = () => {
+      if (popstateHandler) {
+        window.removeEventListener('popstate', popstateHandler)
+        popstateHandler = null
+      }
+    }
+
+    // Navegación con teclado
+    const setupKeyboardNavigation = () => {
+      if (keydownHandler) return // Ya está configurado
+      
+      keydownHandler = (event) => {
+        // Solo si no estamos escribiendo en un input
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+          return
+        }
+        
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault()
+          previousDesktop()
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault()
+          nextDesktop()
+        }
+      }
+      
+      document.addEventListener('keydown', keydownHandler)
+    }
+
+    const removeKeyboardNavigation = () => {
+      if (keydownHandler) {
+        document.removeEventListener('keydown', keydownHandler)
+        keydownHandler = null
+      }
+    }
+
+
+    // Modificar goToDesktop para funcionar con navegación del navegador
+    const originalGoToDesktop = goToDesktop
+    const enhancedGoToDesktop = (index) => {
+      originalGoToDesktop(index)
+      
+      // Si la navegación del navegador está habilitada, navegar en el historial
+      const navigationSettings = JSON.parse(localStorage.getItem('apertura-navigation-settings') || '{}')
+      if (navigationSettings.browserNavigation) {
+        // En lugar de crear nuevas entradas, navegar por el historial existente
+        const currentIndex = store.currentDesktop
+        const stepsToMove = currentIndex - index
+        
+        if (stepsToMove !== 0) {
+          console.log(`🔄 Navegando ${stepsToMove} pasos en el historial (de ${currentIndex} a ${index})`)
+          window.history.go(stepsToMove)
+        }
+      }
     }
 
     onMounted(() => {
       store.loadFromLocalStorage()
       
+      // Cargar configuración de navegación y configurar listeners
+      const savedSettings = localStorage.getItem('apertura-navigation-settings')
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings)
+        updateNavigationSettings(settings)
+      } else {
+        // Configuración por defecto: navegación con teclado habilitada
+        updateNavigationSettings({ 
+          keyboardNavigation: true, 
+          browserNavigation: false
+        })
+      }
+      
       // Cerrar menú contextual al hacer click en cualquier lugar
       document.addEventListener('click', hideContextMenu)
+    })
+
+    onBeforeUnmount(() => {
+      // Limpiar todos los event listeners
+      removeBrowserNavigation()
+      removeKeyboardNavigation()
+      document.removeEventListener('click', hideContextMenu)
     })
 
     return {
@@ -375,7 +554,7 @@ export default {
       showSettings,
       contextMenu,
       editingLink,
-      goToDesktop,
+      goToDesktop: enhancedGoToDesktop,
       nextDesktop,
       previousDesktop,
       openAddLink,
@@ -383,6 +562,8 @@ export default {
       removeLink,
       addDesktop,
       updateDesktop,
+      removeDesktop,
+      updateNavigationSettings,
       handleIconError,
       showContextMenu,
       hideContextMenu,
