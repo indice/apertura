@@ -47,11 +47,30 @@ echo.
 echo 6. ¿Quieres instalar como servicio de Windows? (s/n)
 set /p choice="Opción: "
 if /i "%choice%"=="s" (
+    echo.
+    echo ⚠️  IMPORTANTE: La instalación del servicio requiere permisos de administrador
+    echo    Si aparece un error de "Access denied", ejecuta este .bat como administrador
+    echo.
+    pause
     echo Instalando servicio...
     node install-service.js
-    echo.
-    echo ✅ Apertura instalado como servicio de Windows
-    echo 🚀 Se iniciará automáticamente con Windows
+    if errorlevel 1 (
+        echo.
+        echo ❌ Error instalando el servicio
+        echo 💡 Intenta ejecutar este archivo como administrador:
+        echo    - Haz clic derecho en install.bat
+        echo    - Selecciona "Ejecutar como administrador"
+        echo.
+        echo 📋 También puedes verificar el estado con:
+        echo    cd server ^&^& node check-service.js
+    ) else (
+        echo.
+        echo ✅ Apertura instalado como servicio de Windows
+        echo 🚀 Se iniciará automáticamente con Windows
+        echo.
+        echo 🔍 Verifica el estado del servicio:
+        echo    cd server ^&^& node check-service.js
+    )
 ) else (
     echo.
     echo ✅ Instalación manual completada

@@ -7,22 +7,38 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Crear objeto de servicio (mismo que en install)
+console.log('🗑️  Desinstalando servicio AperturaServer...');
+
+// Crear objeto de servicio (mismo nombre que en install)
 const svc = new Service({
-  name: 'Apertura Server',
+  name: 'AperturaServer',
   description: 'Apertura - Página de inicio personalizable con servidor local',
   script: path.join(__dirname, 'index.js')
 });
 
-// Desinstalar el servicio
+// Event listeners
 svc.on('uninstall', function(){
-  console.log('✅ Servicio Apertura desinstalado correctamente');
+  console.log('✅ Servicio AperturaServer desinstalado correctamente');
   console.log('🛑 El servicio ya no se ejecutará al inicio de Windows');
 });
 
-svc.on('error', function(err){
-  console.error('❌ Error desinstalando el servicio:', err);
+svc.on('doesnotexist', function(){
+  console.log('⚠️  El servicio AperturaServer no existe o ya fue desinstalado');
 });
 
-console.log('🗑️  Desinstalando servicio Apertura...');
-svc.uninstall();
+svc.on('error', function(err){
+  console.error('❌ Error desinstalando el servicio:', err.message);
+  
+  if (err.message.includes('Access is denied')) {
+    console.error('💡 Ejecuta este script como administrador');
+    console.error('   Haz clic derecho en el símbolo del sistema y selecciona "Ejecutar como administrador"');
+  }
+});
+
+// Desinstalar el servicio
+try {
+  svc.uninstall();
+} catch (error) {
+  console.error('❌ Error desinstalando servicio:', error.message);
+  process.exit(1);
+}
