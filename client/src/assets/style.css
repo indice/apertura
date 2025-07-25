@@ -424,7 +424,7 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 1100;
   backdrop-filter: blur(4px);
 }
 
@@ -709,6 +709,24 @@ body, html {
 .desktop-item.active {
   background: rgba(59, 130, 246, 0.1);
   border-color: #3b82f6;
+}
+
+.desktop-drag-handle {
+  cursor: grab;
+  padding: 0.25rem;
+  color: #6b7280;
+  font-size: 1rem;
+  user-select: none;
+  line-height: 1;
+  margin-right: 0.25rem;
+}
+
+.desktop-drag-handle:active {
+  cursor: grabbing;
+}
+
+.desktop-drag-handle:hover {
+  color: #374151;
 }
 
 .desktop-preview {

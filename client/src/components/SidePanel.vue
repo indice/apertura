@@ -131,37 +131,47 @@
             </button>
           </div>
           
-          <div class="desktop-list">
-            <div
-              v-for="(desktop, index) in allDesktops"
-              :key="desktop.id"
-              class="desktop-item"
-              :class="{ active: currentDesktopIndex === index }"
-            >
-              <div 
-                class="desktop-preview"
-                :style="{ background: desktop.background }"
-              ></div>
-              <span class="desktop-name">{{ desktop.name }}</span>
-              <div class="desktop-actions">
-                <button
-                  @click="switchToDesktop(index)"
-                  class="btn-small btn-primary"
-                  :disabled="currentDesktopIndex === index"
-                >
-                  Ir
-                </button>
-                <button
-                  v-if="allDesktops.length > 1"
-                  @click="removeDesktop(index)"
-                  class="btn-small btn-danger"
-                  :disabled="currentDesktopIndex === index"
-                >
-                  🗑️
-                </button>
+          <Draggable
+            :list="allDesktops"
+            item-key="id"
+            class="desktop-list"
+            @change="onDesktopReorder"
+            :disabled="false"
+            handle=".desktop-drag-handle"
+          >
+            <template #item="{ element: desktop, index }">
+              <div
+                class="desktop-item"
+                :class="{ active: currentDesktopIndex === index }"
+              >
+                <div class="desktop-drag-handle">
+                  ⋮⋮
+                </div>
+                <div 
+                  class="desktop-preview"
+                  :style="{ background: desktop.background }"
+                ></div>
+                <span class="desktop-name">{{ desktop.name }}</span>
+                <div class="desktop-actions">
+                  <button
+                    @click="switchToDesktop(index)"
+                    class="btn-small btn-primary"
+                    :disabled="currentDesktopIndex === index"
+                  >
+                    Ir
+                  </button>
+                  <button
+                    v-if="allDesktops.length > 1"
+                    @click="removeDesktop(index)"
+                    class="btn-small btn-danger"
+                    :disabled="currentDesktopIndex === index"
+                  >
+                    🗑️
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
+            </template>
+          </Draggable>
         </div>
       </div>
     </div>
@@ -170,9 +180,13 @@
 
 <script>
 import { ref, computed, watch, onMounted } from 'vue'
+import Draggable from 'vuedraggable'
 
 export default {
   name: 'SidePanel',
+  components: {
+    Draggable
+  },
   props: {
     isOpen: {
       type: Boolean,
@@ -191,7 +205,7 @@ export default {
       required: true
     }
   },
-  emits: ['close', 'update', 'switch-desktop', 'remove-desktop', 'add-desktop', 'update-navigation'],
+  emits: ['close', 'update', 'switch-desktop', 'remove-desktop', 'add-desktop', 'update-navigation', 'reorder-desktops'],
   setup(props, { emit }) {
     const form = ref({
       name: '',
@@ -281,6 +295,17 @@ export default {
       }
     }
 
+    const onDesktopReorder = (event) => {
+      console.log('🔄 Reordenando escritorios:', event)
+      if (event.moved) {
+        // Cuando se mueve un escritorio, emitir el evento con los nuevos índices
+        emit('reorder-desktops', {
+          oldIndex: event.moved.oldIndex,
+          newIndex: event.moved.newIndex
+        })
+      }
+    }
+
 
     const loadNavigationSettings = () => {
       const saved = localStorage.getItem('apertura-navigation-settings')
@@ -320,7 +345,8 @@ export default {
       updateDesktop,
       updateNavigationSettings,
       switchToDesktop,
-      removeDesktop
+      removeDesktop,
+      onDesktopReorder
     }
   }
 }

@@ -137,6 +137,7 @@
       @remove-desktop="removeDesktop"
       @add-desktop="showAddDesktop = true"
       @update-navigation="updateNavigationSettings"
+      @reorder-desktops="reorderDesktops"
     />
 
     <!-- Menú contextual -->
@@ -305,6 +306,32 @@ export default {
     const removeDesktop = (index) => {
       store.removeDesktop(index)
       store.saveToLocalStorage()
+    }
+
+    const reorderDesktops = ({ oldIndex, newIndex }) => {
+      console.log(`🔄 Reordenando escritorio de ${oldIndex} a ${newIndex}`)
+      
+      // Reordenar en el store
+      const movedDesktop = store.desktops.splice(oldIndex, 1)[0]
+      store.desktops.splice(newIndex, 0, movedDesktop)
+      
+      // Actualizar el índice del escritorio actual
+      let newCurrentIndex = store.currentDesktop
+      if (store.currentDesktop === oldIndex) {
+        // El escritorio actual fue movido
+        newCurrentIndex = newIndex
+      } else if (store.currentDesktop > oldIndex && store.currentDesktop <= newIndex) {
+        // El escritorio actual se desplazó hacia atrás
+        newCurrentIndex = store.currentDesktop - 1
+      } else if (store.currentDesktop < oldIndex && store.currentDesktop >= newIndex) {
+        // El escritorio actual se desplazó hacia adelante
+        newCurrentIndex = store.currentDesktop + 1
+      }
+      
+      store.setCurrentDesktop(newCurrentIndex)
+      store.saveToLocalStorage()
+      
+      console.log(`✅ Escritorio reordenado. Nuevo índice actual: ${newCurrentIndex}`)
     }
 
     const updateNavigationSettings = (settings) => {
@@ -585,6 +612,7 @@ export default {
       addDesktop,
       updateDesktop,
       removeDesktop,
+      reorderDesktops,
       updateNavigationSettings,
       handleIconError,
       showContextMenu,

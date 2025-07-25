@@ -1,0 +1,39 @@
+{
+  "name": "apertura-server",
+  "version": "1.0.0",
+  "description": "Apertura - Servidor local para página de inicio personalizable",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "cd ../client && npm run build",
+    "build-exe": "pkg . --out-path=../dist",
+    "install-service": "node install-service.js",
+    "uninstall-service": "node uninstall-service.js"
+  },
+  "keywords": ["apertura", "startpage", "dashboard"],
+  "author": "Tu nombre",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "open": "^10.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "node-windows": "^1.0.0-beta.8",
+    "pkg": "^5.8.1"
+  },
+  "pkg": {
+    "assets": [
+      "../client/dist/**/*",
+      "public/**/*"
+    ],
+    "targets": [
+      "node18-win-x64"
+    ],
+    "outputPath": "../dist"
+  }
+}
