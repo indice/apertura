@@ -10,7 +10,9 @@
     "build": "cd ../client && npm run build",
     "build-exe": "pkg . --out-path=../dist",
     "install-service": "node install-service.js",
+    "install-service-simple": "node install-service-simple.js",
     "uninstall-service": "node uninstall-service.js",
+    "uninstall-service-simple": "node uninstall-service-simple.js",
     "check-service": "node check-service.js"
   },
   "keywords": [
