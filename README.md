@@ -4,7 +4,7 @@ Una página de inicio web minimalista, personalizable y extensible diseñada par
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)
@@ -41,6 +41,7 @@ Una página de inicio web minimalista, personalizable y extensible diseñada par
     - [🖥️ **Gestión de Escritorios**](#️-gestión-de-escritorios)
     - [🔗 **Gestión de Enlaces**](#-gestión-de-enlaces-1)
     - [🖱️ **Navegación**](#️-navegación)
+    - [📂 **Importar/Exportar**](#-importarexportar)
   - [🔌 API](#-api)
     - [Endpoints Disponibles](#endpoints-disponibles)
     - [Ejemplo de Uso](#ejemplo-de-uso)
@@ -86,6 +87,7 @@ Una página de inicio web minimalista, personalizable y extensible diseñada par
 - Datos guardados en localStorage
 - Sin necesidad de cuenta o registro
 - Totalmente privado y offline
+- Sistema de importación/exportación de configuraciones
 
 ### 🖥️ **Servidor Local**
 - Servidor Node.js completo incluido
@@ -247,6 +249,12 @@ NODE_ENV=production # Entorno de ejecución
 - **Navegador**: Botones atrás/adelante (si está habilitado)
 - **Touch**: Gestos táctiles en dispositivos móviles
 
+### 📂 **Importar/Exportar**
+1. **Exportar**: Click en "⚙️ Configurar" → "📂 Gestionar Configuraciones" → "📥 Descargar Configuración"
+2. **Importar**: Selecciona archivo JSON de configuración → "📤 Importar"
+3. **Reset**: Restablecer a configuración por defecto
+4. **Transferir**: Comparte configuraciones entre diferentes instalaciones
+
 ## 🔌 API
 
 El servidor incluye una API REST preparada para expansiones:
@@ -272,7 +280,7 @@ fetch('/api/health')
 // {
 //   "status": "ok",
 //   "timestamp": "2024-01-01T12:00:00.000Z",
-//   "version": "1.0.0"
+//   "version": "1.1.0"
 // }
 ```
 
@@ -293,28 +301,36 @@ fetch('/api/health')
 - Navegación con teclado (on/off)
 - Navegación con navegador (on/off)
 - Configuración persistente en localStorage
+- Exportación/importación de configuraciones
+- Transferencia entre instalaciones
 
 ## 🔮 Roadmap
 
-### v1.1 - Widgets
+### v1.1 - Import/Export ✅
+- [x] Sistema de exportación de configuraciones
+- [x] Sistema de importación con validación
+- [x] Transferencia entre instalaciones
+- [x] Reset a configuración por defecto
+
+### v1.2 - Widgets
 - [ ] Widget del clima
 - [ ] Widget de noticias
 - [ ] Widget de reloj
 - [ ] Widget de notas
 
-### v1.2 - IA
+### v1.3 - IA
 - [ ] Asistente virtual integrado
 - [ ] Sugerencias de enlaces
 - [ ] Búsqueda inteligente
 - [ ] Comandos por voz
 
-### v1.3 - Sync
+### v1.4 - Sync
 - [ ] Sincronización en la nube
 - [ ] Múltiples dispositivos
 - [ ] Backup automático
-- [ ] Import/Export de configuración
+- [ ] Sincronización automática de configuraciones
 
-### v1.4 - Extensiones
+### v1.5 - Extensiones
 - [ ] Sistema de plugins
 - [ ] Temas personalizables
 - [ ] Widgets de terceros

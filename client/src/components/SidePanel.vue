@@ -119,6 +119,19 @@
 
         </div>
 
+        <!-- Importar/Exportar -->
+        <div class="config-section">
+          <h3 class="config-title">Importar / Exportar</h3>
+          <div class="form-group">
+            <button
+              @click="showImportExport = true"
+              class="btn btn-secondary btn-full"
+            >
+              📂 Gestionar Configuraciones
+            </button>
+          </div>
+        </div>
+
         <!-- Gestión de escritorios -->
         <div class="config-section">
           <div class="config-section-header">
@@ -176,16 +189,24 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de Importar/Exportar -->
+  <ImportExportModal
+    v-if="showImportExport"
+    @close="showImportExport = false"
+  />
 </template>
 
 <script>
 import { ref, computed, watch, onMounted } from 'vue'
 import Draggable from 'vuedraggable'
+import ImportExportModal from './ImportExportModal.vue'
 
 export default {
   name: 'SidePanel',
   components: {
-    Draggable
+    Draggable,
+    ImportExportModal
   },
   props: {
     isOpen: {
@@ -218,6 +239,8 @@ export default {
       browserNavigation: false,
       keyboardNavigation: true
     })
+
+    const showImportExport = ref(false)
 
     const presetColors = [
       '#1e293b', '#0f172a', '#1f2937', '#374151',
@@ -338,6 +361,7 @@ export default {
       form,
       customColorInput,
       navigationSettings,
+      showImportExport,
       presetColors,
       presetGradients,
       handleCustomColorInput,
@@ -351,3 +375,25 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.btn-full {
+  width: 100%;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+  text-align: center;
+}
+
+.btn-secondary:hover {
+  background: #4b5563;
+}
+</style>

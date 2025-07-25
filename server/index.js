@@ -28,8 +28,10 @@ class AperturaServer {
           defaultSrc: ["'self'"],
           styleSrc: ["'self'", "'unsafe-inline'"],
           scriptSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", "data:", "https:"],
-          connectSrc: ["'self'"]
+          imgSrc: ["'self'", "data:", "https:", "http:"],
+          connectSrc: ["'self'"],
+          fontSrc: ["'self'", "data:", "https:"],
+          manifestSrc: ["'self'"]
         }
       }
     }));
