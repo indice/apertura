@@ -121,7 +121,15 @@
 
         <!-- Gestión de escritorios -->
         <div class="config-section">
-          <h3 class="config-title">Gestión de Escritorios</h3>
+          <div class="config-section-header">
+            <h3 class="config-title">Gestión de Escritorios</h3>
+            <button
+              @click="$emit('add-desktop')"
+              class="btn btn-primary btn-small"
+            >
+              + Escritorio
+            </button>
+          </div>
           
           <div class="desktop-list">
             <div
@@ -154,13 +162,6 @@
               </div>
             </div>
           </div>
-
-          <button
-            @click="$emit('add-desktop')"
-            class="btn btn-secondary full-width"
-          >
-            + Añadir Escritorio
-          </button>
         </div>
       </div>
     </div>

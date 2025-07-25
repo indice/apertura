@@ -4,10 +4,10 @@
     <header class="header">
       <div class="header-buttons">
         <button
-          @click="showAddDesktop = true"
+          @click="openAddLink(currentDesktopIndex)"
           class="btn btn-glass"
         >
-          + Escritorio
+          + Añadir enlace
         </button>
         <button
           @click="showSettings = true"
@@ -37,43 +37,40 @@
               <p class="desktop-subtitle">Tu página de inicio personalizada</p>
             </div>
 
-            <!-- Grid de enlaces -->
-            <div class="links-grid">
-              <div
-                v-for="link in desktop.links"
-                :key="link.id"
-                class="link-card"
-                @contextmenu="showContextMenu($event, link, index)"
-              >
-                <a
-                  :href="link.url"
-                  target="_blank"
-                  class="link-item"
-                  @click="handleLinkClick($event, link)"
+            <!-- Grid de enlaces con drag and drop -->
+            <Draggable
+              :list="desktop.links"
+              :group="{ name: 'links', pull: true, put: true }"
+              item-key="id"
+              class="links-grid"
+              @change="onLinkDrop($event, index)"
+            >
+              <template #item="{ element: link }">
+                <div
+                  class="link-card"
+                  @contextmenu="showContextMenu($event, link, index)"
                 >
-                  <div class="link-icon">
-                    <img 
-                      v-if="link.faviconUrl" 
-                      :src="link.faviconUrl" 
-                      @error="handleIconError(link)"
-                      :alt="`${link.name} favicon`"
-                      class="favicon-img"
-                    />
-                    <span v-else class="emoji-icon">{{ link.icon || '🔗' }}</span>
-                  </div>
-                  <div class="link-name">{{ link.name }}</div>
-                </a>
-              </div>
-
-              <!-- Botón para añadir enlace -->
-              <button
-                @click="openAddLink(index)"
-                class="link-item link-add"
-              >
-                <div class="link-icon">+</div>
-                <div class="link-name">Añadir enlace</div>
-              </button>
-            </div>
+                  <a
+                    :href="link.url"
+                    target="_blank"
+                    class="link-item"
+                    @click="handleLinkClick($event, link)"
+                  >
+                    <div class="link-icon">
+                      <img 
+                        v-if="link.faviconUrl" 
+                        :src="link.faviconUrl" 
+                        @error="handleIconError(link)"
+                        :alt="`${link.name} favicon`"
+                        class="favicon-img"
+                      />
+                      <span v-else class="emoji-icon">{{ link.icon || '🔗' }}</span>
+                    </div>
+                    <div class="link-name">{{ link.name }}</div>
+                  </a>
+                </div>
+              </template>
+            </Draggable>
           </div>
         </div>
       </div>
@@ -215,13 +212,15 @@ import { useDesktopsStore } from '../stores/desktops'
 import LinkModal from '../components/LinkModal.vue'
 import DesktopModal from '../components/DesktopModal.vue'
 import SidePanel from '../components/SidePanel.vue'
+import Draggable from 'vuedraggable' // <-- Importa vuedraggable
 
 export default {
   name: 'HomeView',
   components: {
     LinkModal,
     DesktopModal,
-    SidePanel
+    SidePanel,
+    Draggable // <-- Añade Draggable
   },
   setup() {
     const store = useDesktopsStore()
@@ -411,6 +410,29 @@ export default {
       }
     }
 
+    // Drag and drop entre escritorios
+    const onLinkDrop = (event, desktopIndex) => {
+      // Si el enlace viene de otro escritorio
+      if (event.added) {
+        const { element } = event.added
+        // Remueve el enlace del escritorio origen
+        desktops.value.forEach((desk, idx) => {
+          if (idx !== desktopIndex) {
+            const i = desk.links.findIndex(l => l.id === element.id)
+            if (i > -1) {
+              store.desktops[idx].links.splice(i, 1)
+            }
+          }
+        })
+        // Añade el enlace al escritorio destino (ya lo hace vuedraggable)
+        store.saveToLocalStorage()
+      }
+      // Si solo se reordenó dentro del mismo escritorio
+      if (event.moved) {
+        store.saveToLocalStorage()
+      }
+    }
+
     // Variables para navegación
     let popstateHandler = null
     let keydownHandler = null
@@ -571,7 +593,8 @@ export default {
       handleLinkClick,
       editLink,
       deleteLink,
-      moveLink
+      moveLink,
+      onLinkDrop
     }
   }
 }
