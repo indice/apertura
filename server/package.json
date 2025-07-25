@@ -2,6 +2,7 @@
   "name": "apertura-server",
   "version": "1.0.0",
   "description": "Apertura - Servidor local para página de inicio personalizable",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -19,7 +20,7 @@
     "cors": "^2.8.5",
     "helmet": "^7.1.0",
     "compression": "^1.7.4",
-    "open": "^10.1.0"
+    "open": "^9.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",

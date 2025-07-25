@@ -1,5 +1,11 @@
-const Service = require('node-windows').Service;
-const path = require('path');
+import { Service } from 'node-windows';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Para obtener __dirname en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Crear objeto de servicio (mismo que en install)
 const svc = new Service({

@@ -1,9 +1,15 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const helmet = require('helmet');
-const compression = require('compression');
-const open = require('open');
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import open from 'open';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Para obtener __dirname en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class AperturaServer {
   constructor() {
@@ -150,4 +156,4 @@ class AperturaServer {
 const server = new AperturaServer();
 server.start();
 
-module.exports = AperturaServer;
+export default AperturaServer;
