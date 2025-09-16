@@ -10,6 +10,12 @@
           + Añadir enlace
         </button>
         <button
+          @click="showKnowledge = true"
+          class="btn btn-glass"
+        >
+          📚 Conocimientos
+        </button>
+        <button
           @click="showSettings = true"
           class="btn btn-glass"
         >
@@ -140,6 +146,12 @@
       @reorder-desktops="reorderDesktops"
     />
 
+    <!-- Gestor de conocimientos -->
+    <KnowledgeManager
+      v-if="showKnowledge"
+      @close="showKnowledge = false"
+    />
+
     <!-- Menú contextual -->
     <div
       v-if="contextMenu.show"
@@ -213,6 +225,8 @@ import { useDesktopsStore } from '../stores/desktops'
 import LinkModal from '../components/LinkModal.vue'
 import DesktopModal from '../components/DesktopModal.vue'
 import SidePanel from '../components/SidePanel.vue'
+import KnowledgeModal from '../components/KnowledgeModal.vue'
+import KnowledgeManager from '../components/KnowledgeManager.vue'
 import Draggable from 'vuedraggable' // <-- Importa vuedraggable
 
 export default {
@@ -221,6 +235,8 @@ export default {
     LinkModal,
     DesktopModal,
     SidePanel,
+    KnowledgeModal,
+    KnowledgeManager,
     Draggable // <-- Añade Draggable
   },
   setup() {
@@ -228,6 +244,7 @@ export default {
     const showAddLink = ref(false)
     const showAddDesktop = ref(false)
     const showSettings = ref(false)
+    const showKnowledge = ref(false)
     const targetDesktopIndex = ref(0)
     const editingLink = ref(null)
     
@@ -601,6 +618,7 @@ export default {
       showAddLink,
       showAddDesktop,
       showSettings,
+      showKnowledge,
       contextMenu,
       editingLink,
       goToDesktop: enhancedGoToDesktop,

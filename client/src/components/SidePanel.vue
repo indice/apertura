@@ -186,6 +186,11 @@
             </template>
           </Draggable>
         </div>
+
+        <!-- Versión -->
+        <div class="version-info">
+          <small class="text-gray-400">v1.3.1</small>
+        </div>
       </div>
     </div>
   </div>
@@ -395,5 +400,18 @@ export default {
 
 .btn-secondary:hover {
   background: #4b5563;
+}
+
+.side-panel-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.version-info {
+  text-align: center;
+  padding: 12px 0;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 </style>
