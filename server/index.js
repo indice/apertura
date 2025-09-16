@@ -8,6 +8,11 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import multer from 'multer';
 import Database from './database.js';
+import { ragRoutes, initRAGService } from './rag-routes.js';
+import dotenv from 'dotenv';
+
+// Cargar variables de entorno
+dotenv.config();
 
 // Para obtener __dirname en ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -26,6 +31,9 @@ class AperturaServer {
     await this.setupMiddleware();
     this.setupRoutes();
     this.setupAPI();
+
+    // Inicializar servicio RAG
+    await initRAGService();
   }
 
   async setupMiddleware() {
@@ -364,20 +372,8 @@ class AperturaServer {
       });
     });
 
-    // API para IA (futuro)
-    this.app.post('/api/ai/chat', async (req, res) => {
-      try {
-        const { message } = req.body;
-        // Aquí se implementará la lógica de RAG con la base de conocimientos
-        res.json({
-          message: 'API de IA con RAG disponible',
-          response: `Recibido: ${message}. Funcionalidad RAG pendiente de implementar.`
-        });
-      } catch (error) {
-        console.error('Error en chat IA:', error);
-        res.status(500).json({ error: 'Error en chat IA' });
-      }
-    });
+    // === RAG API ===
+    this.app.use('/api/rag', ragRoutes);
 
     // Manejo de errores API
     this.app.use('/api/*', (req, res) => {

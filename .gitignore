@@ -129,6 +129,7 @@ dist
 *.xlsx
 *.db
 *.txt
+*.index
 
 # OS generated files
 .DS_Store

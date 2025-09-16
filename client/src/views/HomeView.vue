@@ -16,6 +16,12 @@
           📚 Conocimientos
         </button>
         <button
+          @click="showRAGChat = true"
+          class="btn btn-glass"
+        >
+          🤖 Chat IA
+        </button>
+        <button
           @click="showSettings = true"
           class="btn btn-glass"
         >
@@ -152,6 +158,13 @@
       @close="showKnowledge = false"
     />
 
+    <!-- Modal de Chat RAG -->
+    <div v-if="showRAGChat" class="rag-modal-overlay" @click="showRAGChat = false">
+      <div class="rag-modal" @click.stop>
+        <RAGChat @close="showRAGChat = false" />
+      </div>
+    </div>
+
     <!-- Menú contextual -->
     <div
       v-if="contextMenu.show"
@@ -227,6 +240,7 @@ import DesktopModal from '../components/DesktopModal.vue'
 import SidePanel from '../components/SidePanel.vue'
 import KnowledgeModal from '../components/KnowledgeModal.vue'
 import KnowledgeManager from '../components/KnowledgeManager.vue'
+import RAGChat from '../components/RAGChat.vue'
 import Draggable from 'vuedraggable' // <-- Importa vuedraggable
 
 export default {
@@ -237,6 +251,7 @@ export default {
     SidePanel,
     KnowledgeModal,
     KnowledgeManager,
+    RAGChat,
     Draggable // <-- Añade Draggable
   },
   setup() {
@@ -245,6 +260,7 @@ export default {
     const showAddDesktop = ref(false)
     const showSettings = ref(false)
     const showKnowledge = ref(false)
+    const showRAGChat = ref(false)
     const targetDesktopIndex = ref(0)
     const editingLink = ref(null)
     
@@ -619,6 +635,7 @@ export default {
       showAddDesktop,
       showSettings,
       showKnowledge,
+      showRAGChat,
       contextMenu,
       editingLink,
       goToDesktop: enhancedGoToDesktop,
